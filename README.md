@@ -202,3 +202,93 @@ if __name__ == "__main__":
 ## RESULT:
 The program is executed successfully
 
+---------------------------
+
+# Hill Cipher
+Hill Cipher using with different key values
+
+# AIM:
+
+To develop a simple C program to implement Hill Cipher.
+
+## DESIGN STEPS:
+
+### Step 1:
+
+Design of Hill Cipher algorithnm 
+
+### Step 2:
+
+Implementation using C or pyhton code
+
+### Step 3:
+
+Testing algorithm with different key values. 
+ALGORITHM DESCRIPTION:
+The Hill cipher is a substitution cipher invented by Lester S. Hill in 1929. Each letter is represented by a number modulo 26. To encrypt a message, each block of n letters is multiplied by an invertible n × n matrix, again modulus 26.
+To decrypt the message, each block is multiplied by the inverse of the matrix used for encryption. The matrix used for encryption is the cipher key, and it should be chosen randomly from the set of invertible n × n matrices (modulo 26).
+The cipher can, be adapted to an alphabet with any number of letters. All arithmetic just needs to be done modulo the number of letters instead of modulo 26.
+
+## PROGRAM:
+
+import numpy as np
+
+def mod_inverse_matrix(matrix, mod):
+    det = int(np.round(np.linalg.det(matrix)))
+    det_inv = pow(det, -1, mod)  # Modular inverse of determinant
+    adjugate = np.round(det * np.linalg.inv(matrix)).astype(int) % mod
+    return (det_inv * adjugate) % mod
+
+def text_to_numbers(text):
+    return [ord(c) - 65 for c in text]
+
+def numbers_to_text(numbers):
+    return ''.join(chr(n % 26 + 65) for n in numbers)
+
+def encode_block(block, key_matrix):
+    block_vector = np.array(text_to_numbers(block)).reshape(-1, 1)
+    encoded_vector = np.dot(key_matrix, block_vector) % 26
+    return numbers_to_text(encoded_vector.flatten())
+
+def decode_block(block, inv_key_matrix):
+    block_vector = np.array(text_to_numbers(block)).reshape(-1, 1)
+    decoded_vector = np.dot(inv_key_matrix, block_vector) % 26
+    return numbers_to_text(decoded_vector.flatten())
+
+def hill_cipher_encrypt(text, key_matrix):
+    text = text.upper().replace(" ", "")
+    while len(text) % 3 != 0:
+        text += 'X'  # Padding with 'X'
+    
+    encrypted_text = ""
+    for i in range(0, len(text), 3):
+        encrypted_text += encode_block(text[i:i+3], key_matrix)
+    return encrypted_text
+
+def hill_cipher_decrypt(text, inv_key_matrix):
+    decrypted_text = ""
+    for i in range(0, len(text), 3):
+        decrypted_text += decode_block(text[i:i+3], inv_key_matrix)
+    return decrypted_text
+
+if __name__ == "__main__":
+    key_matrix = np.array([[1, 2, 1], [2, 3, 2], [2, 2, 1]])
+    inv_key_matrix = mod_inverse_matrix(key_matrix, 26)
+    
+    message = "SecurityLaboratory"
+    print("Simulation of Hill Cipher")
+    print("Input message:", message)
+    
+    encrypted_message = hill_cipher_encrypt(message, key_matrix)
+    print("Encoded message:", encrypted_message)
+    
+    decrypted_message = hill_cipher_decrypt(encrypted_message, inv_key_matrix)
+    print("Decoded message:", decrypted_message)
+
+## OUTPUT:
+![image](https://github.com/user-attachments/assets/12bb27c1-3c9d-450d-b25c-0718a1b39643)
+
+## RESULT:
+The program is executed successfully
+
+-------------------------------------------------
